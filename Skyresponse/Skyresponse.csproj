@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B7A1E1FD-3D66-484B-B969-1C1C15A2B2D4}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Skyresponse</RootNamespace>
+    <AssemblyName>Skyresponse</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Win32Resource>
+    </Win32Resource>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NAudio, Version=1.8.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.3\lib\net35\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Globalization" />
+    <Reference Include="System.Runtime" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="Unity, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.2\lib\net45\Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ServiceLocator, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.ServiceLocator.2.0.0\lib\net45\Unity.ServiceLocator.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DialogWrappers\DialogWrapper.cs" />
+    <Compile Include="Forms\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\PlaySoundForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PlaySoundForm.Designer.cs">
+      <DependentUpon>PlaySoundForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Api\SkyResponseApi.cs" />
+    <Compile Include="HttpWrappers\HttpWrapper.cs" />
+    <Compile Include="HttpWrappers\JsonHelper.cs" />
+    <Compile Include="HttpWrappers\WebSocketWrapper.cs" />
+    <Compile Include="Persistence\PersistenceManager.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Services\DeviceInfo.cs" />
+    <Compile Include="Services\SoundService.cs" />
+    <Compile Include="Startup.cs" />
+    <EmbeddedResource Include="Forms\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\PlaySoundForm.resx">
+      <DependentUpon>PlaySoundForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Media\Skyresponse_black_small.ico" />
+    <None Include="Media\Skyresponse_white_small.ico" />
+    <Content Include="Media\Sounds\altanlarm.mp3" />
+    <Content Include="Media\Sounds\batterilarm.mp3" />
+    <Content Include="Media\Sounds\besokslarm.mp3" />
+    <Content Include="Media\Sounds\brandlarm.mp3" />
+    <Content Include="Media\Sounds\dorrlarm.mp3" />
+    <Content Include="Media\Sounds\dorrlarm_avd.mp3" />
+    <Content Include="Media\Sounds\dorrlarm_entre.mp3" />
+    <Content Include="Media\Sounds\dorrlarm_nod.mp3" />
+    <Content Include="Media\Sounds\dorrlarm_terrass.mp3" />
+    <Content Include="Media\Sounds\entrelarm.mp3" />
+    <Content Include="Media\Sounds\fonsterlarm.mp3" />
+    <Content Include="Media\Sounds\golvlarm.mp3" />
+    <Content Include="Media\Sounds\grindlarm.mp3" />
+    <Content Include="Media\Sounds\hisslarm.mp3" />
+    <Content Include="Media\Sounds\hjalplarm.mp3" />
+    <Content Include="Media\Sounds\jag_behover_hjalp.mp3" />
+    <Content Include="Media\Sounds\level1.mp3" />
+    <Content Include="Media\Sounds\level2.mp3" />
+    <Content Include="Media\Sounds\meddelande.mp3" />
+    <Content Include="Media\Sounds\overfallslarm.mp3" />
+    <Content Include="Media\Sounds\paminnelselarm.mp3" />
+    <Content Include="Media\Sounds\panic_ton_litet.mp3" />
+    <Content Include="Media\Sounds\passagelarm.mp3" />
+    <Content Include="Media\Sounds\point1sec.mp3" />
+    <Content Include="Media\Sounds\rorelselarm.mp3" />
+    <Content Include="Media\Sounds\rorelsevakt.mp3" />
+    <Content Include="Media\Sounds\sanglarm.mp3" />
+    <Content Include="Media\Sounds\systemlarm.mp3" />
+    <Content Include="Media\Sounds\tekniklarm.mp3" />
+    <Content Include="Media\Sounds\testlarm.mp3" />
+    <Content Include="Media\Sounds\trygghetslarm.mp3" />
+    <Content Include="Media\Sounds\vandringslarm.mp3" />
+    <Content Include="Media\Sounds\_nt_altanlarm.mp3" />
+    <Content Include="Media\Sounds\_nt_batterilarm.mp3" />
+    <Content Include="Media\Sounds\_nt_besokslarm.mp3" />
+    <Content Include="Media\Sounds\_nt_brandlarm.mp3" />
+    <Content Include="Media\Sounds\_nt_dorrlarm.mp3" />
+    <Content Include="Media\Sounds\_nt_dorrlarm_avd.mp3" />
+    <Content Include="Media\Sounds\_nt_dorrlarm_entre.mp3" />
+    <Content Include="Media\Sounds\_nt_dorrlarm_nod.mp3" />
+    <Content Include="Media\Sounds\_nt_dorrlarm_terrass.mp3" />
+    <Content Include="Media\Sounds\_nt_entrelarm.mp3" />
+    <Content Include="Media\Sounds\_nt_fonsterlarm.mp3" />
+    <Content Include="Media\Sounds\_nt_golvlarm.mp3" />
+    <Content Include="Media\Sounds\_nt_hisslarm.mp3" />
+    <Content Include="Media\Sounds\_nt_hjalplarm.mp3" />
+    <Content Include="Media\Sounds\_nt_jag_behover_hjalp.mp3" />
+    <Content Include="Media\Sounds\_nt_meddelande.mp3" />
+    <Content Include="Media\Sounds\_nt_overfallslarm.mp3" />
+    <Content Include="Media\Sounds\_nt_paminnelselarm.mp3" />
+    <Content Include="Media\Sounds\_nt_passagelarm.mp3" />
+    <Content Include="Media\Sounds\_nt_rorelselarm.mp3" />
+    <Content Include="Media\Sounds\_nt_rorelsevakt.mp3" />
+    <Content Include="Media\Sounds\_nt_sanglarm.mp3" />
+    <Content Include="Media\Sounds\_nt_systemlarm.mp3" />
+    <Content Include="Media\Sounds\_nt_tekniklarm.mp3" />
+    <Content Include="Media\Sounds\_nt_testlarm.mp3" />
+    <Content Include="Media\Sounds\_nt_trygghetslarm.mp3" />
+    <Content Include="Media\Sounds\_nt_vandringslarm.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
