@@ -9,11 +9,11 @@ using Skyresponse.Services;
 
 namespace Skyresponse.Forms
 {
-    public interface IPlaySoundForm
+    public interface IMainForm
     {
     }
 
-    public partial class PlaySoundForm : Form, IPlaySoundForm
+    public partial class MainForm : Form, IMainForm
     {
         private readonly IDialogWrapper _fileDialog;
         private readonly ISkyresponseApi _skyresponseApi;
@@ -21,7 +21,7 @@ namespace Skyresponse.Forms
         private NotifyIcon _notifyIcon;
         private IEnumerable<DeviceInfo> _deviceList;
 
-        public PlaySoundForm(IDialogWrapper fileDialog, ISkyresponseApi skyresponseApi, ISoundService soundService)
+        public MainForm(IDialogWrapper fileDialog, ISkyresponseApi skyresponseApi, ISoundService soundService)
         {
             InitializeComponent();
             _fileDialog = fileDialog;
@@ -29,10 +29,11 @@ namespace Skyresponse.Forms
             _soundService = soundService;
         }
 
-        private void PlaySoundForm_Load(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
             //WindowState = FormWindowState.Minimized; //start application minimized
             PopulateDeviceComboBox();
+            deviceOutComboBox.DropDownWidth = GetDropDownWidth(); //TODO: fixa bredden på dropdownlist!!!
             CreateNotifyIcon();
             _skyresponseApi.InitAsync();
         }
@@ -41,6 +42,17 @@ namespace Skyresponse.Forms
         {
             _deviceList = _soundService.DeviceList;
             deviceOutComboBox.Items.AddRange(_deviceList.ToArray());
+        }
+
+        private int GetDropDownWidth()
+        {
+            List<int> deviceNames = new List<int>();
+            foreach (var deviceInfo in _deviceList)
+            {
+                var deviceNameLength = deviceInfo.DeviceName.Length;
+                deviceNames.Add(deviceNameLength);
+            }
+            return deviceNames.Max();
         }
 
         private void BrowseSoundFile_Click(object sender, EventArgs e)
@@ -87,7 +99,7 @@ namespace Skyresponse.Forms
         {
             var combobox = sender as ComboBox;
             var deviceInfo = combobox.SelectedItem as DeviceInfo;
-            _soundService.SetOutputDevice(deviceInfo.Id);
+            _soundService.SetOutputDevice(deviceInfo.Guid);
         }
 
         private void Exit(object sender, EventArgs e)

@@ -9,13 +9,13 @@ namespace Skyresponse.Services
 
         }
 
-        public DeviceInfo(Guid id, string deviceName)
+        public DeviceInfo(Guid guid, string deviceName)
         {
-            Id = id;
+            Guid = guid;
             DeviceName = deviceName;
         }
 
-        public Guid Id { get; set; }
+        public Guid Guid { get; set; }
         public string DeviceName { get; set; }
 
         public override string ToString()

@@ -16,7 +16,7 @@ namespace Skyresponse
             var unityContainer = Startup.BuildUnityContainer();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(unityContainer.Resolve<PlaySoundForm>());
+            Application.Run(unityContainer.Resolve<MainForm>());
         }
     }
 }

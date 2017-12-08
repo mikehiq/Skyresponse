@@ -21,7 +21,7 @@ namespace Skyresponse
             unityContainer.RegisterType<ILoginForm, LoginForm>();
             unityContainer.RegisterType<ISkyresponseApi, SkyresponseApi>();
             //Always last
-            unityContainer.RegisterType<IPlaySoundForm, PlaySoundForm>();
+            unityContainer.RegisterType<IMainForm, MainForm>();
 
             return unityContainer;
         }
