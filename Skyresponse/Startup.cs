@@ -4,6 +4,7 @@ using Skyresponse.Forms;
 using Skyresponse.HttpWrappers;
 using Skyresponse.Persistence;
 using Skyresponse.Services;
+using Skyresponse.SoundWrappers;
 using Unity;
 
 namespace Skyresponse
@@ -14,6 +15,7 @@ namespace Skyresponse
         {
             var unityContainer = new UnityContainer();
             unityContainer.RegisterType<IPersistenceManager, PersistenceManager>();
+            unityContainer.RegisterType<ISoundWrapper, SoundWrapper>();
             unityContainer.RegisterType<ISoundService, SoundService>(new ContainerControlledLifetimeManager());
             unityContainer.RegisterType<IHttpWrapper, HttpWrapper>();
             unityContainer.RegisterType<IWebSocketWrapper, WebSocketWrapper>();

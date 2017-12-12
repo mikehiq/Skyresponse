@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using NAudio.Wave;
 using Skyresponse.Persistence;
+using Skyresponse.SoundWrappers;
 
 namespace Skyresponse.Services
 {
@@ -18,24 +19,25 @@ namespace Skyresponse.Services
     public class SoundService : ISoundService
     {
         private readonly IPersistenceManager _persistenceManager;
+        private readonly ISoundWrapper _soundWrapper;
         private static readonly string SoundPath = ConfigurationManager.AppSettings["SoundPath"];
         private const string PathSettingsKey = "Path";
         private const string DeviceSettingsKey = "Device";
         private Guid _device;
         private string _path;
 
-        public SoundService(IPersistenceManager persistenceManager)
+        public SoundService(IPersistenceManager persistenceManager, ISoundWrapper soundWrapper)
         {
             _persistenceManager = persistenceManager;
+            _soundWrapper = soundWrapper;
             LoadOutputDevice();
             LoadPath();
         }
 
         public void PlaySound()
         {
-            var fileReader = new Mp3FileReader(_path);
-
-            var soundOut = new DirectSoundOut(_device);
+            var fileReader = _soundWrapper.FileReader(_path);
+            var soundOut = _soundWrapper.DeviceSoundOut(_device);
             soundOut.Init(fileReader);
             soundOut.Play();
         }

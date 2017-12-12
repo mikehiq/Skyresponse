@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using Skyresponse.Forms;
+using Skyresponse.Systemtray;
 using Unity;
 
 namespace Skyresponse
@@ -16,7 +16,7 @@ namespace Skyresponse
             var unityContainer = Startup.BuildUnityContainer();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(unityContainer.Resolve<MainForm>());
+            Application.Run(unityContainer.Resolve<SystemTrayApplicationContext>());
         }
     }
 }

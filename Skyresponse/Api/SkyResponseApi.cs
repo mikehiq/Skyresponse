@@ -120,20 +120,8 @@ namespace Skyresponse.Api
             {
                 _alreadyPlayed.Add(webSocketMessage.globalAlarmId);
                 var alarmInfo = await _httpRequest.GetAlarmInfo(webSocketMessage.globalAlarmId, _accesstoken);
-                if (webSocketMessage.active)
+                if (webSocketMessage.active && alarmInfo > 0)
                 {
-                    switch (alarmInfo)
-                    {
-                        case 0:
-                            //spela inget ljud
-                            break;
-                        case 1:
-                            //spela level1.mp3
-                            break;
-                        case 2:
-                            //spela level2.mp3
-                            break;
-                    }
                     _soundService.PlaySound();
                 }
             }

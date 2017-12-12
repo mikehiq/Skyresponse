@@ -33,7 +33,7 @@ namespace Skyresponse.Forms
         {
             //WindowState = FormWindowState.Minimized; //start application minimized
             PopulateDeviceComboBox();
-            deviceOutComboBox.DropDownWidth = GetDropDownWidth(); //TODO: fixa bredden på dropdownlist!!!
+            GetDropdown();
             CreateNotifyIcon();
             _skyresponseApi.InitAsync();
         }
@@ -42,6 +42,11 @@ namespace Skyresponse.Forms
         {
             _deviceList = _soundService.DeviceList;
             deviceOutComboBox.Items.AddRange(_deviceList.ToArray());
+        }
+
+        private void GetDropdown()
+        {
+            deviceOutComboBox.DropDownWidth = GetDropDownWidth(); //TODO: fixa bredden på dropdownlist!!!
         }
 
         private int GetDropDownWidth()
