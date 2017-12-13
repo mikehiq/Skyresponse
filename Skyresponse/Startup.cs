@@ -5,6 +5,7 @@ using Skyresponse.HttpWrappers;
 using Skyresponse.Persistence;
 using Skyresponse.Services;
 using Skyresponse.SoundWrappers;
+using Skyresponse.Systemtray;
 using Unity;
 
 namespace Skyresponse
@@ -18,12 +19,12 @@ namespace Skyresponse
             unityContainer.RegisterType<ISoundWrapper, SoundWrapper>();
             unityContainer.RegisterType<ISoundService, SoundService>(new ContainerControlledLifetimeManager());
             unityContainer.RegisterType<IHttpWrapper, HttpWrapper>();
-            unityContainer.RegisterType<IWebSocketWrapper, WebSocketWrapper>();
+            unityContainer.RegisterType<IWebSocketWrapper, WebSocketWrapper>(new ContainerControlledLifetimeManager());
             unityContainer.RegisterType<IDialogWrapper, DialogWrapper>();
             unityContainer.RegisterType<ILoginForm, LoginForm>();
             unityContainer.RegisterType<ISkyresponseApi, SkyresponseApi>();
             //Always last
-            unityContainer.RegisterType<IMainForm, MainForm>();
+            unityContainer.RegisterType<ISystemTrayApplicationContext, SystemTrayApplicationContext>();
 
             return unityContainer;
         }

@@ -9,6 +9,7 @@ namespace Skyresponse.Forms
         DialogResult ShowDialog();
         string UserName { get; set; }
         string Password { get; set; }
+        bool Created { get; }
     }
 
     public partial class LoginForm : Form, ILoginForm
@@ -37,6 +38,8 @@ namespace Skyresponse.Forms
             }
             UserName = usernameTextBox.Text;
             Password = passwordTextBox.Text;
+            passwordTextBox.Clear();
+            usernameTextBox.Clear();
 
             DialogResult = DialogResult.OK;
         }

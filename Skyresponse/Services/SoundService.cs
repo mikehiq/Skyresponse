@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using NAudio.Wave;
 using Skyresponse.Persistence;
 using Skyresponse.SoundWrappers;
 
@@ -14,6 +12,9 @@ namespace Skyresponse.Services
         void SavePath(string path);
         void SetOutputDevice(Guid guid);
         IEnumerable<DeviceInfo> DeviceList { get; }
+        bool HasCustomPathSet { get; }
+        bool HasDeviceSet { get; }
+        Guid Device { get; }
     }
 
     public class SoundService : ISoundService
@@ -23,7 +24,6 @@ namespace Skyresponse.Services
         private static readonly string SoundPath = ConfigurationManager.AppSettings["SoundPath"];
         private const string PathSettingsKey = "Path";
         private const string DeviceSettingsKey = "Device";
-        private Guid _device;
         private string _path;
 
         public SoundService(IPersistenceManager persistenceManager, ISoundWrapper soundWrapper)
@@ -36,10 +36,7 @@ namespace Skyresponse.Services
 
         public void PlaySound()
         {
-            var fileReader = _soundWrapper.FileReader(_path);
-            var soundOut = _soundWrapper.DeviceSoundOut(_device);
-            soundOut.Init(fileReader);
-            soundOut.Play();
+            _soundWrapper.Play(_path, Device);
         }
 
         public void SavePath(string path)
@@ -50,24 +47,23 @@ namespace Skyresponse.Services
 
         public void SetOutputDevice(Guid guid)
         {
-            _device = guid;
+            Device = guid;
             _persistenceManager.Save(DeviceSettingsKey, guid.ToString());
         }
 
-        public IEnumerable<DeviceInfo> DeviceList
-        {
-            get
-            {
-                var directSoundDevices = DirectSoundOut.Devices;
-                return directSoundDevices.Select(d => new DeviceInfo(d.Guid, d.Description));
-            }
-        }
+        public IEnumerable<DeviceInfo> DeviceList => _soundWrapper.DeviceList;
+
+        public bool HasCustomPathSet => _persistenceManager.HasValue(PathSettingsKey);
+
+        public bool HasDeviceSet => _persistenceManager.HasValue(DeviceSettingsKey);
+
+        public Guid Device { get; private set; }
 
         private void LoadOutputDevice()
         {
             // Load or default
             var deviceString = _persistenceManager.Read(DeviceSettingsKey);
-            _device = !string.IsNullOrWhiteSpace(deviceString) ? Guid.Parse(deviceString) : DirectSoundOut.DSDEVID_DefaultPlayback;
+            Device = !string.IsNullOrWhiteSpace(deviceString) ? Guid.Parse(deviceString) : _soundWrapper.DefaultDevice;
         }
 
         private void LoadPath()

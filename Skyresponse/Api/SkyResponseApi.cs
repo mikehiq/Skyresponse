@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Net.Http;
+using System.Net.WebSockets;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Skyresponse.Forms;
@@ -23,7 +25,7 @@ namespace Skyresponse.Api
         private readonly IWebSocketWrapper _webSocket;
         private readonly ISoundService _soundService;
         private readonly ILoginForm _loginForm;
-        private readonly Timer _timer;
+        private readonly System.Timers.Timer _timer;
         private readonly List<string> _alreadyPlayed;
         private const string UsernameKey = "UserName";
         private const string PasswordKey = "Password";
@@ -40,8 +42,8 @@ namespace Skyresponse.Api
             _webSocket = webSocket;
             _soundService = soundService;
             _alreadyPlayed = new List<string>();
-            _timer = new Timer { Interval = 10000 };
-            _timer.Tick += OnTimeUp;
+            _timer = new System.Timers.Timer { Interval = 10000 };
+            _timer.Elapsed += OnTimeUp;
         }
 
         /// <summary>
@@ -55,11 +57,16 @@ namespace Skyresponse.Api
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                var result = _loginForm.ShowDialog();
+                var result = DialogResult.None;
+                if (!_loginForm.Created)
+                {
+                    result = _loginForm.ShowDialog();
+                }
                 if (result.Equals(DialogResult.OK))
                 {
                     username = _loginForm.UserName;
                     password = _loginForm.Password;
+                    //TODO: if username or password is incorrect, open a messageBox and dont save to local file
                 }
             }
             await Login(username, password);
@@ -73,13 +80,24 @@ namespace Skyresponse.Api
         /// <returns></returns>
         private async Task Login(string username, string password)
         {
+            var accessToken = string.Empty;
             var dict = new Dictionary<string, string>
             {
                 {UsernameKey, username},
                 {PasswordKey, password},
                 {"grant_type", "password"}
             };
-            var accessToken = await _httpRequest.GetAccessToken(dict);
+
+            try
+            {
+                accessToken = await _httpRequest.GetAccessToken(dict);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                _persistenceManager.ClearUserInfo();
+                await InitAsync();
+            }
+
             if (!string.IsNullOrEmpty(accessToken))
             {
                 IsLoggedIn = true;
@@ -87,21 +105,55 @@ namespace Skyresponse.Api
                 _persistenceManager.Save(UsernameKey, username);
                 _persistenceManager.SaveSecure(PasswordKey, password);
 
-                await _httpRequest.RegisterForPush(_accesstoken);
+                try
+                {
+                    await _httpRequest.RegisterForPush(_accesstoken);
+                }
+                catch (HttpRequestException)
+                {
+                    //do something cool!
+                }
 
                 var webSocketUrl = string.Concat(WebSocketUrl, _accesstoken);
-                _webSocket.Connect(webSocketUrl);
+
+                try
+                {
+                    _webSocket.Connect(webSocketUrl);
+                }
+                catch (WebSocketException)
+                {
+                    ReConnect();
+                }
+
                 _webSocket.OnMessage(OnMessageAsync);
                 _webSocket.OnDisconnect(OnDisconnect);
                 _timer.Stop();
             }
         }
 
+        /// <summary>
+        /// Try to reconnect
+        /// </summary>
+        /// <param name="webSocketWrapper"></param>
         private void OnDisconnect(WebSocketWrapper webSocketWrapper)
         {
+            ReConnect();
+        }
+
+        /// <summary>
+        /// Calls OnTimeUp when timer runs out
+        /// </summary>
+        private void ReConnect()
+        {
+            _timer.Enabled = true;
             _timer.Start();
         }
 
+        /// <summary>
+        /// Calls InitAsync
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void OnTimeUp(object sender, EventArgs e)
         {
             await InitAsync();

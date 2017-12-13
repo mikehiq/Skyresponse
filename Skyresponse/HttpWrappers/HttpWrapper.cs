@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -54,6 +55,10 @@ namespace Skyresponse.HttpWrappers
             _url = string.Concat(BaseUrl, TokenUrl);
             var request = new HttpRequestMessage(HttpMethod.Post, _url) { Content = new FormUrlEncodedContent(dict) };
             var response = await Client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+                throw new UnauthorizedAccessException();
+
             var definition = new { access_token = "", token_type = "", expires_in = "" };
             var jsonObject = await response.GetJsonObject(definition);
             return await Task.FromResult(jsonObject.access_token);
@@ -70,7 +75,10 @@ namespace Skyresponse.HttpWrappers
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", accesstoken);
             _url = string.Concat(BaseUrl, RegisterUrl);
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, _url) { Content = new StringContent(Json, Encoding.UTF8, JsonContentType) };
-            await Client.SendAsync(httpRequestMessage);
+            var response = await Client.SendAsync(httpRequestMessage);
+
+            if (!response.IsSuccessStatusCode)
+                throw new HttpRequestException();
         }
 
         /// <inheritdoc />

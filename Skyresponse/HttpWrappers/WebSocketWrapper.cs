@@ -40,13 +40,6 @@ namespace Skyresponse.HttpWrappers
         /// </summary>
         /// <param name="message">The message to send</param>
         void SendMessage(string message);
-
-        /// <summary>
-        /// Creates a new instance.
-        /// </summary>
-        /// <param name="uri">The URI of the WebSocket server.</param>
-        /// <returns></returns>
-        //WebSocketWrapper Create(string uri);
     }
 
     public class WebSocketWrapper : IWebSocketWrapper
@@ -55,7 +48,6 @@ namespace Skyresponse.HttpWrappers
         private const int SendChunkSize = 1024;
 
         private readonly ClientWebSocket _ws;
-        //private readonly Uri _uri;
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _cancellationToken;
 
@@ -63,24 +55,14 @@ namespace Skyresponse.HttpWrappers
         private Action<string, WebSocketWrapper> _onMessage;
         private Action<WebSocketWrapper> _onDisconnected;
 
-        public WebSocketWrapper(/*string uri*/)
+        public WebSocketWrapper()
         {
             _ws = new ClientWebSocket();
             _ws.Options.KeepAliveInterval = TimeSpan.FromSeconds(20);
-            //_uri = new Uri(uri);
             _cancellationToken = _cancellationTokenSource.Token;
         }
-
-        /// <summary>
-        /// Creates a new instance.
-        /// </summary>
-        /// <param name="uri">The URI of the WebSocket server.</param>
-        /// <returns></returns>
-        //public WebSocketWrapper Create(string uri)
-        //{
-        //    return new WebSocketWrapper(uri);
-        //}
-
+        
+        /// <inheritdoc />
         /// <summary>
         /// Connects to the WebSocket server.
         /// </summary>
@@ -91,6 +73,7 @@ namespace Skyresponse.HttpWrappers
             return this;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Set the Action to call when the connection has been established.
         /// </summary>
@@ -102,6 +85,7 @@ namespace Skyresponse.HttpWrappers
             return this;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Set the Action to call when the connection has been terminated.
         /// </summary>
@@ -113,6 +97,7 @@ namespace Skyresponse.HttpWrappers
             return this;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Set the Action to call when a messages has been received.
         /// </summary>
@@ -124,6 +109,7 @@ namespace Skyresponse.HttpWrappers
             return this;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Send a message to the WebSocket server.
         /// </summary>

@@ -12,6 +12,8 @@ namespace Skyresponse.Persistence
         string ReadSecure(string key);
         void Save(string key, string value);
         string Read(string key);
+        void ClearUserInfo();
+        bool HasValue(string key);
     }
 
     /// <summary>
@@ -66,6 +68,20 @@ namespace Skyresponse.Persistence
         {
             var value = Properties.Settings.Default[key].ToString();
             return value;
+        }
+
+        /// <summary>
+        /// Clears user info from local file
+        /// </summary>
+        public void ClearUserInfo()
+        {
+            Save("UserName", string.Empty);
+            Save("Password", string.Empty);
+        }
+
+        public bool HasValue(string key)
+        {
+            return !string.IsNullOrWhiteSpace(Read(key));
         }
 
         /// <summary>

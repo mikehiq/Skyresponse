@@ -1,30 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Windows.Forms;
 using Skyresponse.Api;
 using Skyresponse.DialogWrappers;
+using Skyresponse.Persistence;
 using Skyresponse.Properties;
 using Skyresponse.Services;
 
 namespace Skyresponse.Systemtray
 {
-    public class SystemTrayApplicationContext : ApplicationContext
+    public interface ISystemTrayApplicationContext
+    {
+    }
+
+    public class SystemTrayApplicationContext : ApplicationContext, ISystemTrayApplicationContext
     {
         private readonly IDialogWrapper _fileDialog;
         private readonly ISkyresponseApi _skyresponseApi;
         private readonly ISoundService _soundService;
+        private readonly IPersistenceManager _persistenceManager;
         private NotifyIcon _notifyIcon;
         private IEnumerable<DeviceInfo> _deviceList;
         MenuItem _defaultMenuItem;
         MenuItem _customMenuItem;
 
-        public SystemTrayApplicationContext(IDialogWrapper fileDialog, ISkyresponseApi skyresponseApi, ISoundService soundService)
+        public SystemTrayApplicationContext(IDialogWrapper fileDialog, ISkyresponseApi skyresponseApi, ISoundService soundService, IPersistenceManager persistenceManager)
         {
             _fileDialog = fileDialog;
             _skyresponseApi = skyresponseApi;
             _soundService = soundService;
+            _persistenceManager = persistenceManager;
             Init();
         }
 
@@ -44,18 +50,17 @@ namespace Skyresponse.Systemtray
                 Visible = true
             };
             var soundMenu = new MenuItem("Sound");
-            _defaultMenuItem = new MenuItem("Default", SoundMenu_Click);
+            _defaultMenuItem = new MenuItem("Default", SoundMenu_Click) { Checked = !_soundService.HasCustomPathSet };
             soundMenu.MenuItems.Add(_defaultMenuItem);
-            _defaultMenuItem.Checked = true;
-            _customMenuItem = new MenuItem("Custom", SoundMenu_Click);
+            _customMenuItem = new MenuItem("Custom", SoundMenu_Click) { Checked = _soundService.HasCustomPathSet };
             soundMenu.MenuItems.Add(_customMenuItem);
             _notifyIcon.ContextMenu.MenuItems.Add(soundMenu);
 
             var deviceMenu = new MenuItem("Device");
-            deviceMenu.MenuItems.AddRange(_deviceList.Select(d => new MenuItem(d.DeviceName, SelectedDeviceOut_Click)).ToArray());
+            deviceMenu.MenuItems.AddRange(_deviceList.Select(d => new MenuItem(d.DeviceName, SelectedDeviceOut_Click) { Checked = IsDeviceChecked(d)}).ToArray());
             _notifyIcon.ContextMenu.MenuItems.Add(deviceMenu);
 
-            _notifyIcon.ContextMenu.MenuItems.Add(new MenuItem("Exit", Exit));
+            _notifyIcon.ContextMenu.MenuItems.Add(new MenuItem("Logout", Logout));
 
             _notifyIcon.Text = @"Skyresponse ljudmonitor";
         }
@@ -73,24 +78,31 @@ namespace Skyresponse.Systemtray
             {
                 _defaultMenuItem.Checked = true;
                 _customMenuItem.Checked = false;
-                _soundService.SavePath(ConfigurationManager.AppSettings["SoundPath"]);
+                _soundService.SavePath(string.Empty);
             }
+        }
+
+        private bool IsDeviceChecked(DeviceInfo deviceInfo)
+        {
+            return _soundService.Device == deviceInfo.Guid;
         }
 
         private void SelectedDeviceOut_Click(object sender, EventArgs e)
         {
-            var item = sender as MenuItem;
+            var item = (MenuItem)sender;
             UncheckAllMenuItems(item);
             var deviceInfo = _deviceList.First(d => d.DeviceName.Equals(item.Text));
             item.Checked = true;
             _soundService.SetOutputDevice(deviceInfo.Guid);
         }
 
-        private void Exit(object sender, EventArgs e)
+        private void Logout(object sender, EventArgs e)
         {
             // Hide tray icon, otherwise it will remain shown until user mouses over it
             _notifyIcon.Visible = false;
-            Application.Exit();
+            _persistenceManager.ClearUserInfo();
+            Application.Restart();
+            Environment.Exit(0);
         }
         #endregion
 
@@ -105,7 +117,7 @@ namespace Skyresponse.Systemtray
         {
             foreach (var parentObject in item.Parent.MenuItems)
             {
-                var menuItem = parentObject as MenuItem;
+                var menuItem = (MenuItem)parentObject;
                 menuItem.Checked = false;
             }
         }

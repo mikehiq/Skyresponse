@@ -13,6 +13,7 @@ namespace Skyresponse
         [STAThread]
         private static void Main()
         {
+            Services.StartUpManager.AddApplicationToCurrentUserStartup();
             var unityContainer = Startup.BuildUnityContainer();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
