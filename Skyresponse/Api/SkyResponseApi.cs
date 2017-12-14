@@ -112,6 +112,7 @@ namespace Skyresponse.Api
                 catch (HttpRequestException)
                 {
                     //do something cool!
+                    ReConnect(); //??
                 }
 
                 var webSocketUrl = string.Concat(WebSocketUrl, _accesstoken);
