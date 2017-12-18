@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Skyresponse.DialogWrappers;
 using Skyresponse.Forms;
 using Skyresponse.HttpWrappers;
 using Skyresponse.Persistence;
@@ -24,6 +25,7 @@ namespace Skyresponse.Api
         private readonly IHttpWrapper _httpRequest;
         private readonly IWebSocketWrapper _webSocket;
         private readonly ISoundService _soundService;
+        private readonly IDialogWrapper _dialog;
         private readonly ILoginForm _loginForm;
         private readonly System.Timers.Timer _timer;
         private readonly List<string> _alreadyPlayed;
@@ -34,13 +36,14 @@ namespace Skyresponse.Api
 
         public bool IsLoggedIn { get; set; }
 
-        public SkyresponseApi(IPersistenceManager persistenceManager, ILoginForm loginForm, IHttpWrapper httpRequest, IWebSocketWrapper webSocket, ISoundService soundService)
+        public SkyresponseApi(IPersistenceManager persistenceManager, ILoginForm loginForm, IHttpWrapper httpRequest, IWebSocketWrapper webSocket, ISoundService soundService, IDialogWrapper dialog)
         {
             _persistenceManager = persistenceManager;
             _loginForm = loginForm;
             _httpRequest = httpRequest;
             _webSocket = webSocket;
             _soundService = soundService;
+            _dialog = dialog;
             _alreadyPlayed = new List<string>();
             _timer = new System.Timers.Timer { Interval = 10000 };
             _timer.Elapsed += OnTimeUp;
@@ -66,7 +69,6 @@ namespace Skyresponse.Api
                 {
                     username = _loginForm.UserName;
                     password = _loginForm.Password;
-                    //TODO: if username or password is incorrect, open a messageBox and dont save to local file
                 }
             }
             await Login(username, password);
@@ -95,6 +97,7 @@ namespace Skyresponse.Api
             catch (UnauthorizedAccessException)
             {
                 _persistenceManager.ClearUserInfo();
+                _dialog.ShowMessageBox("Incorrect user name or password!", @"Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Error); //TODO: flytta bort härifrån, FULT!
                 await InitAsync();
             }
 
@@ -111,13 +114,12 @@ namespace Skyresponse.Api
                 }
                 catch (HttpRequestException)
                 {
-                    //do something cool!
+                    ReConnect();
                 }
-
-                var webSocketUrl = string.Concat(WebSocketUrl, _accesstoken);
 
                 try
                 {
+                    var webSocketUrl = string.Concat(WebSocketUrl, _accesstoken);
                     _webSocket.Connect(webSocketUrl);
                 }
                 catch (WebSocketException)

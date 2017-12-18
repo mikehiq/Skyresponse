@@ -7,14 +7,14 @@ namespace Skyresponse.Services
 {
     public class StartUpManager
     {
-        private static readonly string AssemblyLocation = ConfigurationManager.AppSettings["AssemblyLocation"];
         private static readonly string SubKey = ConfigurationManager.AppSettings["SubKey"];
+        private const string AppName = "AlarmMonitor";
 
         public static void AddApplicationToCurrentUserStartup()
         {
             using (var key = Registry.CurrentUser.OpenSubKey($"{SubKey}", true))
             {
-                key.SetValue("Skyresponse", $"{AssemblyLocation}");
+                key.SetValue(AppName, $"{System.Reflection.Assembly.GetExecutingAssembly().Location}");
             }
         }
 
@@ -22,7 +22,7 @@ namespace Skyresponse.Services
         {
             using (var key = Registry.LocalMachine.OpenSubKey($"{SubKey}", true))
             {
-                key.SetValue("Skyresponse", $"{AssemblyLocation}");
+                key.SetValue(AppName, $"{System.Reflection.Assembly.GetExecutingAssembly().Location}");
             }
         }
 
@@ -38,7 +38,7 @@ namespace Skyresponse.Services
         {
             using (var key = Registry.LocalMachine.OpenSubKey($"{SubKey}", true))
             {
-                key.DeleteValue("Skyresponse", false);
+                key.DeleteValue(AppName, false);
             }
         }
 
