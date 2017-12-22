@@ -18,7 +18,7 @@ namespace Skyresponse.Forms
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
-
+            AcceptButton = loginButton;
         }
 
         private void LoginButton_Click(object sender, EventArgs e)
