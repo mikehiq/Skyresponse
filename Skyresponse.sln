@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Skyresponse", "Skyresponse\
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "AlarmMonitorSetup", "AlarmMonitorSetup\AlarmMonitorSetup.vdproj", "{1E06FA7A-C299-4588-92F1-B7E87A4D28D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyresponseUnitTest", "SkyresponseUnitTest\SkyresponseUnitTest.csproj", "{7BC0F41F-27AE-4C7F-8DDA-4AD7EB58CE9E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,7 +28,16 @@ Global
 		{1E06FA7A-C299-4588-92F1-B7E87A4D28D8}.Debug|Any CPU.ActiveCfg = Debug
 		{1E06FA7A-C299-4588-92F1-B7E87A4D28D8}.Debug|x86.ActiveCfg = Debug
 		{1E06FA7A-C299-4588-92F1-B7E87A4D28D8}.Release|Any CPU.ActiveCfg = Release
+		{1E06FA7A-C299-4588-92F1-B7E87A4D28D8}.Release|Any CPU.Build.0 = Release
 		{1E06FA7A-C299-4588-92F1-B7E87A4D28D8}.Release|x86.ActiveCfg = Release
+		{7BC0F41F-27AE-4C7F-8DDA-4AD7EB58CE9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BC0F41F-27AE-4C7F-8DDA-4AD7EB58CE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BC0F41F-27AE-4C7F-8DDA-4AD7EB58CE9E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7BC0F41F-27AE-4C7F-8DDA-4AD7EB58CE9E}.Debug|x86.Build.0 = Debug|Any CPU
+		{7BC0F41F-27AE-4C7F-8DDA-4AD7EB58CE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BC0F41F-27AE-4C7F-8DDA-4AD7EB58CE9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BC0F41F-27AE-4C7F-8DDA-4AD7EB58CE9E}.Release|x86.ActiveCfg = Release|Any CPU
+		{7BC0F41F-27AE-4C7F-8DDA-4AD7EB58CE9E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

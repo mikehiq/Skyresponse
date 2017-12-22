@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Skyresponse.HttpWrappers
+namespace Skyresponse.Wrappers.HttpWrappers
 {
     public static class JsonHelper
     {

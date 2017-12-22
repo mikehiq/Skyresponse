@@ -2,21 +2,10 @@
 using System.Collections.Generic;
 using System.Configuration;
 using Skyresponse.Persistence;
-using Skyresponse.SoundWrappers;
+using Skyresponse.Wrappers.SoundWrappers;
 
-namespace Skyresponse.Services
+namespace Skyresponse.Services.Sound
 {
-    public interface ISoundService
-    {
-        void PlaySound();
-        void SavePath(string path);
-        void SetOutputDevice(Guid guid);
-        IEnumerable<DeviceInfo> DeviceList { get; }
-        bool HasCustomPathSet { get; }
-        bool HasDeviceSet { get; }
-        Guid Device { get; }
-    }
-
     public class SoundService : ISoundService
     {
         private readonly IPersistenceManager _persistenceManager;

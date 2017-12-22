@@ -4,50 +4,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Skyresponse.HttpWrappers
+namespace Skyresponse.Wrappers.HttpWrappers
 {
-    public interface IWebSocketWrapper
-    {
-        /// <summary>
-        /// Connects to the WebSocket server.
-        /// </summary>
-        /// <returns></returns>
-        WebSocketWrapper Connect(string uri);
-
-        /// <summary>
-        /// Set the Action to call when the connection has been established.
-        /// </summary>
-        /// <param name="onConnect">The Action to call.</param>
-        /// <returns></returns>
-        WebSocketWrapper OnConnect(Action<WebSocketWrapper> onConnect);
-
-        /// <summary>
-        /// Set the Action to call when the connection has been terminated.
-        /// </summary>
-        /// <param name="onDisconnect">The Action to call</param>
-        /// <returns></returns>
-        WebSocketWrapper OnDisconnect(Action<WebSocketWrapper> onDisconnect);
-
-        /// <summary>
-        /// Set the Action to call when a messages has been received.
-        /// </summary>
-        /// <param name="onMessage">The Action to call.</param>
-        /// <returns></returns>
-        WebSocketWrapper OnMessage(Action<string, WebSocketWrapper> onMessage);
-
-        /// <summary>
-        /// Send a message to the WebSocket server.
-        /// </summary>
-        /// <param name="message">The message to send</param>
-        void SendMessage(string message);
-    }
-
     public class WebSocketWrapper : IWebSocketWrapper
     {
         private const int ReceiveChunkSize = 1024;
         private const int SendChunkSize = 1024;
 
-        private readonly ClientWebSocket _ws;
+        private ClientWebSocket _ws;
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _cancellationToken;
 
@@ -57,11 +21,9 @@ namespace Skyresponse.HttpWrappers
 
         public WebSocketWrapper()
         {
-            _ws = new ClientWebSocket();
-            _ws.Options.KeepAliveInterval = TimeSpan.FromSeconds(20);
             _cancellationToken = _cancellationTokenSource.Token;
         }
-        
+
         /// <inheritdoc />
         /// <summary>
         /// Connects to the WebSocket server.
@@ -69,7 +31,16 @@ namespace Skyresponse.HttpWrappers
         /// <returns></returns>
         public WebSocketWrapper Connect(string uri)
         {
-            ConnectAsync(uri);
+            _ws = new ClientWebSocket { Options = { KeepAliveInterval = TimeSpan.FromSeconds(20) } };
+            try
+            {
+                ConnectAsync(uri);
+            }
+            catch (Exception ex)
+            {
+                var exception = new WebSocketException(WebSocketError.ConnectionClosedPrematurely, ex);
+                throw exception;
+            }
             return this;
         }
 
@@ -147,7 +118,14 @@ namespace Skyresponse.HttpWrappers
         private async void ConnectAsync(string uri)
         {
             var connectUri = new Uri(uri);
-            await _ws.ConnectAsync(connectUri, _cancellationToken);
+            try
+            {
+                await _ws.ConnectAsync(connectUri, _cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             CallOnConnected();
             StartListen();
         }

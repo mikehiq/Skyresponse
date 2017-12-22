@@ -6,33 +6,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Skyresponse.HttpWrappers
+namespace Skyresponse.Wrappers.HttpWrappers
 {
-    public interface IHttpWrapper
-    {
-        /// <summary>
-        /// Returns an accesstoken
-        /// </summary>
-        /// <param name="dict"></param>
-        /// <returns></returns>
-        Task<string> GetAccessToken(Dictionary<string, string> dict);
-
-        /// <summary>
-        /// Register for push messages
-        /// </summary>
-        /// <param name="accesstoken"></param>
-        /// <returns></returns>
-        Task RegisterForPush(string accesstoken);
-
-        /// <summary>
-        /// Get info on the alarm
-        /// </summary>
-        /// <param name="alarmId"></param>
-        /// <param name="accesstoken"></param>
-        /// <returns></returns>
-        Task<int> GetAlarmInfo(string alarmId, string accesstoken);
-    }
-
     public class HttpWrapper : IHttpWrapper
     {
         private static readonly HttpClient Client = new HttpClient();
@@ -54,7 +29,15 @@ namespace Skyresponse.HttpWrappers
         {
             _url = string.Concat(BaseUrl, TokenUrl);
             var request = new HttpRequestMessage(HttpMethod.Post, _url) { Content = new FormUrlEncodedContent(dict) };
-            var response = await Client.SendAsync(request);
+            HttpResponseMessage response;
+            try
+            {
+                response = await Client.SendAsync(request);
+            }
+            catch (HttpRequestException ex)
+            {
+                throw ex;
+            }
 
             if (!response.IsSuccessStatusCode)
                 throw new UnauthorizedAccessException();

@@ -78,8 +78,11 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="NAudio, Version=1.8.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NAudio.1.8.3\lib\net35\NAudio.dll</HintPath>
+    <Reference Include="CommonServiceLocator, Version=2.0.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.4.0\lib\net45\CommonServiceLocator.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -94,25 +97,52 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="Unity, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.4.0.2\lib\net45\Unity.dll</HintPath>
+    <Reference Include="Unity.Abstractions, Version=2.4.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.4.0\lib\net45\Unity.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.ServiceLocator, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.ServiceLocator.2.0.0\lib\net45\Unity.ServiceLocator.dll</HintPath>
+    <Reference Include="Unity.Configuration, Version=5.1.1.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.4.0\lib\net45\Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Container, Version=5.4.0.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.4.0\lib\net45\Unity.Container.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Interception, Version=5.2.0.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.4.0\lib\net45\Unity.Interception.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Interception.Configuration, Version=5.1.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.4.0\lib\net45\Unity.Interception.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RegistrationByConvention, Version=2.1.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.4.0\lib\net45\Unity.RegistrationByConvention.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ServiceLocation, Version=2.0.9.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.4.0\lib\net45\Unity.ServiceLocation.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DialogWrappers\DialogWrapper.cs" />
+    <Compile Include="Api\ISkyresponseApi.cs" />
+    <Compile Include="Forms\ILoginForm.cs" />
+    <Compile Include="Persistence\IPersistenceManager.cs" />
+    <Compile Include="Services\AccessTokenResponse.cs" />
+    <Compile Include="Services\Sound\ISoundService.cs" />
+    <Compile Include="Services\User\IUserService.cs" />
+    <Compile Include="Services\User\UserService.cs" />
+    <Compile Include="Services\WebSocket\IWebSocketService.cs" />
+    <Compile Include="Services\WebSocket\WebSocketService.cs" />
+    <Compile Include="Wrappers\DialogWrappers\DialogWrapper.cs" />
     <Compile Include="Forms\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Api\SkyResponseApi.cs" />
-    <Compile Include="HttpWrappers\HttpWrapper.cs" />
-    <Compile Include="HttpWrappers\JsonHelper.cs" />
-    <Compile Include="HttpWrappers\WebSocketWrapper.cs" />
+    <Compile Include="Api\SkyresponseApi.cs" />
+    <Compile Include="Wrappers\DialogWrappers\IDialogWrapper.cs" />
+    <Compile Include="Wrappers\HttpWrappers\HttpWrapper.cs" />
+    <Compile Include="Wrappers\HttpWrappers\IHttpWrapper.cs" />
+    <Compile Include="Wrappers\HttpWrappers\IWebSocketWrapper.cs" />
+    <Compile Include="Wrappers\HttpWrappers\JsonHelper.cs" />
+    <Compile Include="Wrappers\HttpWrappers\WebSocketWrapper.cs" />
     <Compile Include="Persistence\PersistenceManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -122,9 +152,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\DeviceInfo.cs" />
-    <Compile Include="Services\SoundService.cs" />
+    <Compile Include="Services\Sound\SoundService.cs" />
     <Compile Include="Services\StartUpManager.cs" />
-    <Compile Include="SoundWrappers\SoundWrapper.cs" />
+    <Compile Include="Wrappers\SoundWrappers\ISoundWrapper.cs" />
+    <Compile Include="Wrappers\SoundWrappers\SoundWrapper.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Systemtray\SystemTrayApplicationContext.cs" />
     <EmbeddedResource Include="Forms\LoginForm.resx">
@@ -173,7 +204,9 @@
     <Content Include="Media\Sounds\hjalplarm.mp3" />
     <Content Include="Media\Sounds\jag_behover_hjalp.mp3" />
     <Content Include="Media\Sounds\level1.mp3" />
-    <Content Include="Media\Sounds\level2.mp3" />
+    <Content Include="Media\Sounds\level2.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Media\Sounds\meddelande.mp3" />
     <Content Include="Media\Sounds\overfallslarm.mp3" />
     <Content Include="Media\Sounds\paminnelselarm.mp3" />

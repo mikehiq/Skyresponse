@@ -1,52 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Http;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using Skyresponse.DialogWrappers;
-using Skyresponse.Forms;
-using Skyresponse.HttpWrappers;
-using Skyresponse.Persistence;
-using Skyresponse.Services;
+using Skyresponse.Services.Sound;
+using Skyresponse.Services.User;
+using Skyresponse.Wrappers.HttpWrappers;
 
 namespace Skyresponse.Api
 {
-    public interface ISkyresponseApi
-    {
-        Task InitAsync();
-        bool IsLoggedIn { get; set; }
-    }
-
     public class SkyresponseApi : ISkyresponseApi
     {
-        private readonly IPersistenceManager _persistenceManager;
         private readonly IHttpWrapper _httpRequest;
         private readonly IWebSocketWrapper _webSocket;
         private readonly ISoundService _soundService;
-        private readonly IDialogWrapper _dialog;
-        private readonly ILoginForm _loginForm;
-        private readonly System.Timers.Timer _timer;
+        private readonly IUserService _userService;
         private readonly List<string> _alreadyPlayed;
-        private const string UsernameKey = "UserName";
-        private const string PasswordKey = "Password";
         private static readonly string WebSocketUrl = ConfigurationManager.AppSettings["WebSocketUrl"];
         private string _accesstoken;
 
-        public bool IsLoggedIn { get; set; }
-
-        public SkyresponseApi(IPersistenceManager persistenceManager, ILoginForm loginForm, IHttpWrapper httpRequest, IWebSocketWrapper webSocket, ISoundService soundService, IDialogWrapper dialog)
+        public SkyresponseApi(IHttpWrapper httpRequest, IWebSocketWrapper webSocket, ISoundService soundService, IUserService userService)
         {
-            _persistenceManager = persistenceManager;
-            _loginForm = loginForm;
             _httpRequest = httpRequest;
             _webSocket = webSocket;
             _soundService = soundService;
-            _dialog = dialog;
+            _userService = userService;
             _alreadyPlayed = new List<string>();
-            _timer = new System.Timers.Timer { Interval = 10000 };
-            _timer.Elapsed += OnTimeUp;
         }
 
         /// <summary>
@@ -55,58 +34,20 @@ namespace Skyresponse.Api
         /// <returns></returns>
         public async Task InitAsync()
         {
-            var username = _persistenceManager.Read(UsernameKey);
-            var password = _persistenceManager.ReadSecure(PasswordKey);
-
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-            {
-                var result = DialogResult.None;
-                if (!_loginForm.Created)
-                {
-                    result = _loginForm.ShowDialog();
-                }
-                if (result.Equals(DialogResult.OK))
-                {
-                    username = _loginForm.UserName;
-                    password = _loginForm.Password;
-                }
-            }
-            await Login(username, password);
+            await Login();
         }
 
         /// <summary>
-        /// Login to SkyResponse API and get access token
+        /// Login to SkyResponse API
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
         /// <returns></returns>
-        private async Task Login(string username, string password)
+        public async Task Login()
         {
-            var accessToken = string.Empty;
-            var dict = new Dictionary<string, string>
-            {
-                {UsernameKey, username},
-                {PasswordKey, password},
-                {"grant_type", "password"}
-            };
+            _accesstoken = await _userService.GetAccessToken();
 
-            try
+            if (!string.IsNullOrEmpty(_accesstoken))
             {
-                accessToken = await _httpRequest.GetAccessToken(dict);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                _persistenceManager.ClearUserInfo();
-                _dialog.ShowMessageBox("Incorrect user name or password!", @"Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Error); //TODO: flytta bort härifrån, FULT!
-                await InitAsync();
-            }
-
-            if (!string.IsNullOrEmpty(accessToken))
-            {
-                IsLoggedIn = true;
-                _accesstoken = accessToken;
-                _persistenceManager.Save(UsernameKey, username);
-                _persistenceManager.SaveSecure(PasswordKey, password);
+                _userService.SaveUserInfo();
 
                 try
                 {
@@ -115,6 +56,7 @@ namespace Skyresponse.Api
                 catch (HttpRequestException)
                 {
                     ReConnect();
+                    return;
                 }
 
                 try
@@ -125,11 +67,11 @@ namespace Skyresponse.Api
                 catch (WebSocketException)
                 {
                     ReConnect();
+                    return;
                 }
 
                 _webSocket.OnMessage(OnMessageAsync);
                 _webSocket.OnDisconnect(OnDisconnect);
-                _timer.Stop();
             }
         }
 
@@ -145,18 +87,7 @@ namespace Skyresponse.Api
         /// <summary>
         /// Calls OnTimeUp when timer runs out
         /// </summary>
-        private void ReConnect()
-        {
-            _timer.Enabled = true;
-            _timer.Start();
-        }
-
-        /// <summary>
-        /// Calls InitAsync
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void OnTimeUp(object sender, EventArgs e)
+        private async void ReConnect()
         {
             await InitAsync();
         }

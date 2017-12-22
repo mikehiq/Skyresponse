@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
-using Skyresponse.DialogWrappers;
+using Skyresponse.Wrappers.DialogWrappers;
 
 namespace Skyresponse.Forms
 {
-    public interface ILoginForm
-    {
-        DialogResult ShowDialog();
-        string UserName { get; set; }
-        string Password { get; set; }
-        bool Created { get; }
-    }
-
     public partial class LoginForm : Form, ILoginForm
     {
         private readonly IDialogWrapper _dialogWrapper;

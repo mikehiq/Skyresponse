@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Skyresponse.Api;
-using Skyresponse.DialogWrappers;
 using Skyresponse.Persistence;
 using Skyresponse.Properties;
 using Skyresponse.Services;
+using Skyresponse.Services.Sound;
+using Skyresponse.Wrappers.DialogWrappers;
 
 namespace Skyresponse.Systemtray
 {

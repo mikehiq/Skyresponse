@@ -4,15 +4,8 @@ using System.Linq;
 using NAudio.Wave;
 using Skyresponse.Services;
 
-namespace Skyresponse.SoundWrappers
+namespace Skyresponse.Wrappers.SoundWrappers
 {
-    public interface ISoundWrapper
-    {
-        void Play(string path, Guid device);
-        IEnumerable<DeviceInfo> DeviceList { get; }
-        Guid DefaultDevice { get; }
-    }
-
     public class SoundWrapper : ISoundWrapper
     {
         public void Play(string path, Guid device)
