@@ -101,12 +101,12 @@ namespace Skyresponse.Services.User
 
         private void ShowErrorDialog()
         {
-            _dialogWrapper.ShowMessageBox("Incorrect user name or password!", @"Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            _dialogWrapper.ShowMessageBox("Incorrect user name or password!", @"Skyresponse", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void ShowConnectionLostDialog()
         {
-            _dialogWrapper.ShowMessageBox("Connection lost!\nPress OK to reconnect.", @"Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            _dialogWrapper.ShowMessageBox("Connection lost!\nPress OK to reconnect.", @"Skyresponse", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }
