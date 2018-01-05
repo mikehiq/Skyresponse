@@ -54,7 +54,7 @@
     <Compile Include="Api\SkyresponseApiTest.cs" />
     <Compile Include="Login\LoginFormTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\SoundServiceTest.cs" />
+    <Compile Include="Services\Sound\SoundServiceTest.cs" />
     <Compile Include="Services\User\UserServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>

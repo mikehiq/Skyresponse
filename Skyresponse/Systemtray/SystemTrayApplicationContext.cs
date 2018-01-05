@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Windows.Forms;
 using Skyresponse.Api;
@@ -23,8 +24,8 @@ namespace Skyresponse.Systemtray
         private readonly IPersistenceManager _persistenceManager;
         private NotifyIcon _notifyIcon;
         private IEnumerable<DeviceInfo> _deviceList;
-        MenuItem _defaultMenuItem;
-        MenuItem _customMenuItem;
+        private MenuItem _defaultMenuItem;
+        private MenuItem _customMenuItem;
 
         public SystemTrayApplicationContext(IDialogWrapper fileDialog, ISkyresponseApi skyresponseApi, ISoundService soundService, IPersistenceManager persistenceManager)
         {
@@ -79,7 +80,7 @@ namespace Skyresponse.Systemtray
             {
                 _defaultMenuItem.Checked = true;
                 _customMenuItem.Checked = false;
-                _soundService.SavePath(string.Empty);
+                _soundService.SavePath(ConfigurationManager.AppSettings["SoundPath"]);
             }
         }
 

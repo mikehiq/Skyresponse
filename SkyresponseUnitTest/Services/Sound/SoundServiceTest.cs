@@ -2,11 +2,10 @@
 using Moq;
 using NUnit.Framework;
 using Skyresponse.Persistence;
-using Skyresponse.Services;
 using Skyresponse.Services.Sound;
 using Skyresponse.Wrappers.SoundWrappers;
 
-namespace SkyresponseUnitTest.Services
+namespace SkyresponseUnitTest.Services.Sound
 {
     [TestFixture]
     public class SoundServiceTest

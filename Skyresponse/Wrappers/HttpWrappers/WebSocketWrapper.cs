@@ -31,7 +31,7 @@ namespace Skyresponse.Wrappers.HttpWrappers
         /// <returns></returns>
         public WebSocketWrapper Connect(string uri)
         {
-            _ws = new ClientWebSocket {Options = {KeepAliveInterval = TimeSpan.FromSeconds(20)}};
+            _ws = new ClientWebSocket { Options = { KeepAliveInterval = TimeSpan.FromSeconds(20) } };
             try
             {
                 ConnectAsync(uri);
@@ -98,7 +98,7 @@ namespace Skyresponse.Wrappers.HttpWrappers
             }
 
             var messageBuffer = Encoding.UTF8.GetBytes(message);
-            var messagesCount = (int) Math.Ceiling((double) messageBuffer.Length / SendChunkSize);
+            var messagesCount = (int)Math.Ceiling((double)messageBuffer.Length / SendChunkSize);
 
             for (var i = 0; i < messagesCount; i++)
             {
@@ -111,8 +111,7 @@ namespace Skyresponse.Wrappers.HttpWrappers
                     count = messageBuffer.Length - offset;
                 }
 
-                await _ws.SendAsync(new ArraySegment<byte>(messageBuffer, offset, count), WebSocketMessageType.Text,
-                    lastMessage, _cancellationToken);
+                await _ws.SendAsync(new ArraySegment<byte>(messageBuffer, offset, count), WebSocketMessageType.Text, lastMessage, _cancellationToken);
             }
         }
 
@@ -127,7 +126,7 @@ namespace Skyresponse.Wrappers.HttpWrappers
             {
                 throw ex;
             }
-            await CallOnConnected();
+            CallOnConnected();
             StartListen();
         }
 
@@ -149,9 +148,9 @@ namespace Skyresponse.Wrappers.HttpWrappers
 
                         if (result.MessageType == WebSocketMessageType.Close)
                         {
-                            await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty,
-                                CancellationToken.None);
-                            await CallOnDisconnected();
+                            await
+                                _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+                            CallOnDisconnected();
                         }
                         else
                         {
@@ -161,13 +160,13 @@ namespace Skyresponse.Wrappers.HttpWrappers
 
                     } while (!result.EndOfMessage);
 
-                    await CallOnMessage(stringResult);
+                    CallOnMessage(stringResult);
 
                 }
             }
             catch (Exception)
             {
-                await CallOnDisconnected();
+                CallOnDisconnected();
             }
             finally
             {
@@ -175,27 +174,27 @@ namespace Skyresponse.Wrappers.HttpWrappers
             }
         }
 
-        private async Task CallOnMessage(StringBuilder stringResult)
+        private void CallOnMessage(StringBuilder stringResult)
         {
             if (_onMessage != null)
-                await RunInTask(() => _onMessage(stringResult.ToString(), this));
+                RunInTask(() => _onMessage(stringResult.ToString(), this));
         }
 
-        private async Task CallOnDisconnected()
+        private void CallOnDisconnected()
         {
             if (_onDisconnected != null)
-                await RunInTask(() => _onDisconnected(this));
+                RunInTask(() => _onDisconnected(this));
         }
 
-        private async Task CallOnConnected()
+        private void CallOnConnected()
         {
             if (_onConnected != null)
-                await RunInTask(() => _onConnected(this));
+                RunInTask(() => _onConnected(this));
         }
 
-        private static async Task RunInTask(Action action)
+        private static void RunInTask(Action action)
         {
-            await Task.Factory.StartNew(action);
+            Task.Factory.StartNew(action);
         }
     }
 }

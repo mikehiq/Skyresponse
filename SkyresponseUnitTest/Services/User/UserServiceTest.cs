@@ -102,13 +102,12 @@ namespace SkyresponseUnitTest.Services.User
 
         private static Dictionary<string, string> CreateLoginInfoDictionary()
         {
-            var dict = new Dictionary<string, string>
+            return new Dictionary<string, string>
             {
                 { "UserName", Username },
                 { "Password", Password },
                 { "grant_type", Granttype }
             };
-            return dict;
         }
     }
 }
