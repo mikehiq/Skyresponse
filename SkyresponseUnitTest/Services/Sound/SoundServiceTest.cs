@@ -60,5 +60,15 @@ namespace SkyresponseUnitTest.Services.Sound
             //Assert
             _persistanceManager.Verify(x => x.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
+
+        [Test]
+        public void LoadPathTest()
+        {
+            //Act
+            _soundService.LoadPath();
+
+            //Assert
+            _persistanceManager.Verify(x => x.Read(It.IsAny<string>()), Times.Once);
+        }
     }
 }

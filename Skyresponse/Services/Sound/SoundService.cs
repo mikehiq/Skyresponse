@@ -40,6 +40,14 @@ namespace Skyresponse.Services.Sound
             _persistenceManager.Save(DeviceSettingsKey, guid.ToString());
         }
 
+        public void LoadPath()
+        {
+            _path = _persistenceManager.Read(PathSettingsKey);
+
+            if (string.IsNullOrWhiteSpace(_path))
+                _path = SoundPath;
+        }
+
         public IEnumerable<DeviceInfo> DeviceList => _soundWrapper.DeviceList;
 
         public bool HasCustomPathSet => _persistenceManager.HasValue(PathSettingsKey);
@@ -53,14 +61,6 @@ namespace Skyresponse.Services.Sound
             // Load or default
             var deviceString = _persistenceManager.Read(DeviceSettingsKey);
             Device = !string.IsNullOrWhiteSpace(deviceString) ? Guid.Parse(deviceString) : _soundWrapper.DefaultDevice;
-        }
-
-        private void LoadPath()
-        {
-            _path = _persistenceManager.Read(PathSettingsKey);
-
-            if (string.IsNullOrWhiteSpace(_path))
-                _path = SoundPath;
         }
     }
 }

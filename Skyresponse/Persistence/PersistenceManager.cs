@@ -60,15 +60,6 @@ namespace Skyresponse.Persistence
             return value;
         }
 
-        /// <summary>
-        /// Clears user info from local file
-        /// </summary>
-        public void ClearUserInfo()
-        {
-            Save("UserName", string.Empty);
-            Save("Password", string.Empty);
-        }
-
         public bool HasValue(string key)
         {
             return !string.IsNullOrWhiteSpace(Read(key));

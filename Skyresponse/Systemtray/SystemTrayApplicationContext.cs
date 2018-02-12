@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Windows.Forms;
 using Skyresponse.Api;
-using Skyresponse.Persistence;
 using Skyresponse.Properties;
 using Skyresponse.Services;
 using Skyresponse.Services.Sound;
+using Skyresponse.Services.User;
 using Skyresponse.Wrappers.DialogWrappers;
 
 namespace Skyresponse.Systemtray
@@ -21,18 +20,18 @@ namespace Skyresponse.Systemtray
         private readonly IDialogWrapper _fileDialog;
         private readonly ISkyresponseApi _skyresponseApi;
         private readonly ISoundService _soundService;
-        private readonly IPersistenceManager _persistenceManager;
+        private readonly IUserService _userService;
         private NotifyIcon _notifyIcon;
         private IEnumerable<DeviceInfo> _deviceList;
         private MenuItem _defaultMenuItem;
         private MenuItem _customMenuItem;
 
-        public SystemTrayApplicationContext(IDialogWrapper fileDialog, ISkyresponseApi skyresponseApi, ISoundService soundService, IPersistenceManager persistenceManager)
+        public SystemTrayApplicationContext(IDialogWrapper fileDialog, ISkyresponseApi skyresponseApi, ISoundService soundService, IUserService userService)
         {
             _fileDialog = fileDialog;
             _skyresponseApi = skyresponseApi;
             _soundService = soundService;
-            _persistenceManager = persistenceManager;
+            _userService = userService;
             Init();
         }
 
@@ -80,7 +79,8 @@ namespace Skyresponse.Systemtray
             {
                 _defaultMenuItem.Checked = true;
                 _customMenuItem.Checked = false;
-                _soundService.SavePath(ConfigurationManager.AppSettings["SoundPath"]);
+                _soundService.SavePath(string.Empty);
+                _soundService.LoadPath();
             }
         }
 
@@ -102,7 +102,7 @@ namespace Skyresponse.Systemtray
         {
             // Hide tray icon, otherwise it will remain shown until user mouses over it
             _notifyIcon.Visible = false;
-            _persistenceManager.ClearUserInfo();
+            _userService.ClearUserInfo();
             Application.Restart();
             Environment.Exit(0);
         }

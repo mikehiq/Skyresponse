@@ -12,5 +12,6 @@ namespace Skyresponse.Services.Sound
         bool HasCustomPathSet { get; }
         bool HasDeviceSet { get; }
         Guid Device { get; }
+        void LoadPath();
     }
 }

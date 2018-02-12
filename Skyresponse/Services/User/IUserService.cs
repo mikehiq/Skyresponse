@@ -5,8 +5,6 @@ namespace Skyresponse.Services.User
 {
     public interface IUserService
     {
-        Dictionary<string, string> GetUserInfoDictionary();
-
         /// <summary>
         /// Return access token
         /// </summary>
@@ -16,5 +14,9 @@ namespace Skyresponse.Services.User
         void SaveUserInfo();
 
         Task<string> GetAccessToken();
+
+        void ClearUserInfo();
+
+        Dictionary<string, string> UserInfoDictionary { get; }
     }
 }

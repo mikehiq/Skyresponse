@@ -38,17 +38,17 @@ namespace SkyresponseUnitTest.Services.User
         {
             MockUserInfo(Username, Password);
 
-            var resultDictionary = _userService.GetUserInfoDictionary();
+            var resultDictionary = _userService.UserInfoDictionary;
             Assert.That(resultDictionary, Is.EquivalentTo(CreateLoginInfoDictionary()));
         }
 
         [Test]
         public void GivenLoginFormCreated_DontCallShowDialog()
         {
-            MockUserInfo(Username, Password);
+            //MockUserInfo(Username, Password);
 
             _loginForm.Setup(x => x.Created).Returns(true);
-            _userService.GetUserInfoDictionary();
+            var resultDictionary =_userService.UserInfoDictionary;
 
             _loginForm.Verify(x => x.ShowDialog(), Times.Never);
         }
@@ -63,7 +63,7 @@ namespace SkyresponseUnitTest.Services.User
             _loginForm.Setup(x => x.UserName).Returns(Username);
             _loginForm.Setup(x => x.Password).Returns(Password);
 
-            var resultDictionary = _userService.GetUserInfoDictionary();
+            var resultDictionary = _userService.UserInfoDictionary;
             Assert.That(resultDictionary, Is.EquivalentTo(CreateLoginInfoDictionary()));
         }
 
@@ -75,7 +75,6 @@ namespace SkyresponseUnitTest.Services.User
 
             _userService.GetAccessTokenResponse();
 
-            _persistanceManager.Verify(x => x.ClearUserInfo(), Times.Once);
             _dialogWrapper.Verify(x => x.ShowMessageBox(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Once);
         }
 
@@ -85,6 +84,8 @@ namespace SkyresponseUnitTest.Services.User
             //Arrange
             _persistanceManager.Setup(x => x.Save(It.IsAny<string>(), It.IsAny<string>())).Verifiable();
             _persistanceManager.Setup(x => x.SaveSecure(It.IsAny<string>(), It.IsAny<string>())).Verifiable();
+            //MockUserInfo(Username, Password);
+            var resultDictionary = _userService.UserInfoDictionary;
 
             //Act
             _userService.SaveUserInfo();
